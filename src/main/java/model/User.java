@@ -3,7 +3,7 @@ package model;
 import javax.persistence.*;
 
 @Table(name = "users", indexes = {
-        @Index(name = "users_ipaddress_key", columnList = "ipaddress", unique = true)
+        @Index(name = "users_username_key", columnList = "username", unique = true)
 })
 @Entity
 public class User {
@@ -13,30 +13,22 @@ public class User {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Column(name = "ipaddress", nullable = false, length = 15)
-    private String ipaddress;
+    @Column(name = "username", nullable = false, length = 50)
+    private String username;
 
     public User() {
     }
 
-    public User(String ipaddress) {
-        this.ipaddress = ipaddress;
+    public User(String username) {
+        this.username = username;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", ipaddress='" + ipaddress + '\'' +
-                '}';
+    public String getUsername() {
+        return username;
     }
 
-    public String getIpaddress() {
-        return ipaddress;
-    }
-
-    public void setIpaddress(String ipaddress) {
-        this.ipaddress = ipaddress;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public Integer getId() {

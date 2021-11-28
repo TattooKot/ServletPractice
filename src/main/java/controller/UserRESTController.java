@@ -2,8 +2,9 @@ package controller;
 
 import com.google.gson.Gson;
 import model.User;
-import repository.hibernate.UserRepositoryImpl;
+import service.UserService;
 
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,15 +13,16 @@ import java.io.PrintWriter;
 import java.util.List;
 import java.util.Objects;
 
+@WebServlet(value = "/users")
 public class UserRESTController extends HttpServlet {
-    private final UserRepositoryImpl repository = new UserRepositoryImpl();
+    private final UserService service = new UserService();
     private final Gson gson = new Gson();
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException{
-        String idParam = request.getParameter("id");
+        String idParam = request.getHeader("id");
 
-        if (idParam.equals("all")) {
+        if (Objects.isNull(idParam)) {
             getAll(response);
         } else if (idParam.matches("\\d+")) {
             getById(request, response);
@@ -31,10 +33,10 @@ public class UserRESTController extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String ip = request.getParameter("ip");
+        String name = request.getHeader("name");
 
-        if(Objects.nonNull(ip) && ip.matches("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$")){
-            create(ip, response);
+        if(Objects.nonNull(name)){
+            create(name, response);
         } else {
             response.setStatus(400);
         }
@@ -42,11 +44,10 @@ public class UserRESTController extends HttpServlet {
 
     @Override
     public void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String ip = request.getParameter("ip");
-        String id = request.getParameter("id");
+        String id = request.getHeader("id");
+        String name = request.getHeader("name");
 
-        if(Objects.nonNull(ip) && Objects.nonNull(id)
-                && id.matches("\\d+") && ip.matches("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$")){
+        if(Objects.nonNull(name) && Objects.nonNull(id) && id.matches("\\d+")){
             update(request, response);
         } else {
             response.setStatus(400);
@@ -55,7 +56,7 @@ public class UserRESTController extends HttpServlet {
 
     @Override
     public void doDelete(HttpServletRequest request, HttpServletResponse response){
-        String idParam = request.getParameter("id");
+        String idParam = request.getHeader("id");
 
         if(Objects.nonNull(idParam) && idParam.matches("\\d+")){
             delete(Integer.parseInt(idParam), response);
@@ -65,13 +66,13 @@ public class UserRESTController extends HttpServlet {
     }
 
     private void getAll(HttpServletResponse response) throws IOException{
-        List<User> users = repository.getAll();
+        List<User> users = service.getAll();
         createResponse(users, response);
     }
 
     private void getById(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        int id = Integer.parseInt(request.getParameter("id"));
-        User user = repository.getById(id);
+        int id = Integer.parseInt(request.getHeader("id"));
+        User user = service.getById(id);
         if(Objects.isNull(user)){
             response.setStatus(400);
             return;
@@ -79,15 +80,9 @@ public class UserRESTController extends HttpServlet {
         createResponse(user, response);
     }
 
-    private void create(String ip, HttpServletResponse response) throws IOException {
-        List<User> users = repository.getAll();
-        User user = users.stream()
-                .filter(u -> ip.equals(u.getIpaddress()))
-                .findAny()
-                .orElse(null);
-
-        if(Objects.isNull(user)){
-            User created = repository.create(new User(ip));
+    private void create(String name, HttpServletResponse response) throws IOException {
+        if(!service.checkByName(name)){
+            User created = service.create(new User(name));
             createResponse(created, response);
         } else {
             response.setStatus(500);
@@ -95,23 +90,22 @@ public class UserRESTController extends HttpServlet {
     }
 
     private void update(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        int id = Integer.parseInt(request.getParameter("id"));
-        String ip = request.getParameter("ip");
-        User user = repository.getById(id);
+        int id = Integer.parseInt(request.getHeader("id"));
+        String name = request.getHeader("name");
+        User user = service.getById(id);
         if(Objects.isNull(user)){
             response.setStatus(400);
             return;
         }
 
-        user.setIpaddress(ip);
-        repository.update(user);
+        user.setUsername(name);
+        service.update(user);
         createResponse(user, response);
     }
 
     private void delete(int id, HttpServletResponse response){
-        User user = repository.getById(id);
-        if(Objects.nonNull(user)){
-            repository.delete(id);
+        if(service.checkById(id)){
+            service.delete(id);
         } else {
             response.setStatus(400);
         }

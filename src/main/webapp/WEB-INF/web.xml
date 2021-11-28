@@ -4,13 +4,5 @@
 
 <web-app>
   <display-name>Archetype Created Web Application</display-name>
-    <servlet>
-        <servlet-name>UserRestController</servlet-name>
-        <servlet-class>controller.UserRESTController</servlet-class>
-    </servlet>
 
-    <servlet-mapping>
-        <servlet-name>UserRestController</servlet-name>
-        <url-pattern>/users</url-pattern>
-    </servlet-mapping>
 </web-app>
