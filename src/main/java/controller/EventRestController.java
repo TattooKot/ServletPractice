@@ -171,9 +171,7 @@ public class EventRestController extends HttpServlet {
     }
 
     private void saveFile(Part part, String fileName) throws IOException {
-
         File file = new File("uploadedFiles/" + fileName);
-//        file.createNewFile();
 
         try(BufferedInputStream inputStream =
                     new BufferedInputStream(part.getInputStream());
@@ -189,5 +187,4 @@ public class EventRestController extends HttpServlet {
             outputStream.write(buffer.toByteArray());
         }
     }
-
 }
