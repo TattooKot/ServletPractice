@@ -1,6 +1,8 @@
 package model;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Table(name = "users", indexes = {
         @Index(name = "users_username_key", columnList = "username", unique = true)
@@ -16,11 +18,22 @@ public class User {
     @Column(name = "username", nullable = false, length = 50)
     private String username;
 
+    @OneToMany(fetch = FetchType.EAGER)
+    private List<Event> events = new ArrayList<>();
+
     public User() {
     }
 
     public User(String username) {
         this.username = username;
+    }
+
+    public List<Event> getEvents() {
+        return events;
+    }
+
+    public void setEvents(List<Event> eventList) {
+        this.events = eventList;
     }
 
     public String getUsername() {

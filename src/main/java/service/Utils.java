@@ -1,5 +1,6 @@
 package service;
 
+import model.Event;
 import model.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -15,6 +16,7 @@ public class Utils {
 
     private static void config(){
         configuration.addAnnotatedClass(User.class);
+        configuration.addAnnotatedClass(Event.class);
         sessionFactory = configuration.buildSessionFactory();
     }
 
