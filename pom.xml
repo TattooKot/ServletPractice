@@ -118,10 +118,20 @@
           <artifactId>flyway-maven-plugin</artifactId>
           <version>8.0.5</version>
           <configuration>
-            <user>postgres</user>
-            <password>password</password>
-            <url>${env.JDBC_DATABASE_URL}</url>
+<!--            <user>${hibernate_username}</user>-->
+<!--            <password>${hibernate_password}</password>-->
+<!--            <url>jdbc:postgresql://${hibernate_db_host}/${hibernate_db_name}</url>-->
 <!--            <url>jdbc:postgresql://localhost:5432/servletpractice</url>-->
+            <url>${env.JDBC_DATABASE_URL}</url>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>com.heroku.sdk</groupId>
+          <artifactId>heroku-maven-plugin</artifactId>
+          <version>3.0.3</version>
+          <configuration>
+            <appName>servletpractice1</appName>
           </configuration>
         </plugin>
 
