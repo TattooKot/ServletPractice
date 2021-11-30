@@ -120,7 +120,8 @@
           <configuration>
             <user>postgres</user>
             <password>password</password>
-            <url>jdbc:postgresql://localhost:5432/servletpractice</url>
+            <url>${env.JDBC_DATABASE_URL}</url>
+<!--            <url>jdbc:postgresql://localhost:5432/servletpractice</url>-->
           </configuration>
         </plugin>
 
