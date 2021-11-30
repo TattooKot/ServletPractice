@@ -101,8 +101,6 @@
           <version>2.8.2</version>
         </plugin>
 
-
-
         <plugin>
           <groupId>org.apache.tomcat.maven</groupId>
           <artifactId>tomcat7-maven-plugin</artifactId>
