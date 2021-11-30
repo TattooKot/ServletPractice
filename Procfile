@@ -1,1 +1,1 @@
-java $JAVA_OPTS -jar webapp-runner.jar $WEBAPP_RUNNER_OPTS --port $PORT target/ServletPractice.war
+web: java $JAVA_OPTS -jar artifacts/webapp-runner.jar --port $PORT artifacts/ServletPractice.war
